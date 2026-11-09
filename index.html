@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCS 60-Day Master Study Routine & Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background:
+                radial-gradient(ellipse at 8% 8%, rgba(16, 185, 129, 0.10), transparent 34rem),
+                radial-gradient(ellipse at 94% 24%, rgba(59, 130, 246, 0.08), transparent 30rem),
+                linear-gradient(135deg, #f8fafc 0%, #f0f7f4 52%, #f1f5f9 100%);
+            font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+        }
+        main > section {
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.055);
+        }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 380px; }
+        @media (min-width: 768px) { .chart-container { height: 340px; } }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+    <header class="bg-emerald-800 text-amber-50 shadow-md sticky top-0 z-50">
+        <div class="w-full px-4 md:px-6 xl:px-10 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-4">
+                <span class="shrink-0 text-2xl font-bold bg-amber-400 text-emerald-950 px-2 py-1 rounded-lg">IJT.</span>
+                <div class="min-w-0">
+                    <h1 class="text-lg md:text-xl font-bold leading-tight"> BCS ৬০ দিনের নিবিড় প্রস্তুতি ও রুটিন ট্র্যাকার</h1>
+                    <p class="text-xs text-emerald-200"> মোট ২ মাসের পড়া, রিভিশন, এক্সাম ও ফাইনাল প্রস্তুতি পরিকল্পনা</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 space-x-reverse text-sm">
+                <a href="https://p2a.academy/" target="_blank" rel="noopener noreferrer" class="bg-amber-400 hover:bg-amber-300 text-emerald-950 font-medium px-3 py-1.5 rounded text-xs transition">P2A Academy</a>
+                <button onclick="resetProgress()" class="bg-emerald-700 hover:bg-emerald-600 text-stone-100 px-3 py-1.5 rounded text-xs transition">🔄 প্রগ্রেস রিসেট</button>
+                <button onclick="window.print()" class="bg-amber-400 hover:bg-amber-300 text-emerald-950 font-medium px-3 py-1.5 rounded text-xs transition">🖨️ রুটিন প্রিন্ট / PDF</button>
+            </div>
+        </div>
+    </header>
+    <main class="flex-grow w-full px-4 md:px-6 xl:px-10 py-6 space-y-6">
+        <section class="bg-white rounded-xl shadow-sm border border-stone-200 p-5">
+            <div class="mb-4 border-b border-stone-100 pb-3">
+                <h2 class="text-lg font-bold text-emerald-900">📊 আপনার ৬০ দিনের প্রস্তুতি ড্যাশবোর্ড</h2>
+                <p class="text-xs text-stone-500">প্রতিদিনের সকালে ও রাতে সেশন complete করুণ। আপনার সামগ্রিক অগ্রগতি স্বয়ংক্রিয়ভাবে আপডেট হবে।</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-stone-50 border border-stone-200 rounded-lg p-3 text-center"><span class="text-xs text-stone-500 block">মোট সময়সীমা</span><span class="text-xl font-extrabold text-emerald-800">৬০ দিন</span></div>
+                <div class="bg-stone-50 border border-stone-200 rounded-lg p-3 text-center"><span class="text-xs text-stone-500 block">মোট সেশন</span><span class="text-xl font-extrabold text-emerald-800" id="totalExamsCount">১২০টি</span></div>
+                <div class="bg-stone-50 border border-stone-200 rounded-lg p-3 text-center"><span class="text-xs text-stone-500 block">সম্পন্ন সেশন</span><span class="text-xl font-extrabold text-amber-600" id="completedCount">০ / ১২০</span></div>
+                <div class="bg-stone-50 border border-stone-200 rounded-lg p-3 text-center"><span class="text-xs text-stone-500 block">অগ্রগতির হার</span><span class="text-xl font-extrabold text-emerald-600" id="progressPercentage">০%</span></div>
+            </div>
+            <div class="mb-6">
+                <div class="flex justify-between text-xs font-semibold mb-1 text-stone-600"><span>প্রস্তুতির অগ্রগতি</span><span id="progressBarLabel">০% সম্পন্ন</span></div>
+                <div class="w-full bg-stone-200 rounded-full h-3 overflow-hidden"><div id="progressBar" class="bg-emerald-600 h-3 rounded-full transition-all duration-500" style="width: 0%"></div></div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <div class="lg:col-span-6 border border-stone-100 rounded-lg p-4 bg-stone-50"><h3 class="text-sm font-bold text-stone-700 mb-2 text-center">বিষয়ভিত্তিক সেশন ডিস্ট্রিবিউশন (৬০ দিন)</h3><div class="chart-container"><canvas id="subjectChart"></canvas></div></div>
+                <div class="lg:col-span-6 border border-stone-100 rounded-lg p-4 bg-stone-50"><h3 class="text-sm font-bold text-stone-700 mb-3">দৈনিক কর্মপরিকল্পনা</h3><div class="space-y-3 text-xs text-stone-700"><div class="flex gap-3 items-start p-2.5 rounded-lg bg-emerald-50 border border-emerald-100"><span class="mt-0.5 text-emerald-700">☀️</span><div><p class="font-bold text-emerald-900">সকাল</p><p>নতুন টপিক বা কঠিন অংশে ১.৫–২ ঘণ্টা ফোকাস, আলোচনা, নোট ও প্র্যাকটিস।</p></div></div><div class="flex gap-3 items-start p-2.5 rounded-lg bg-amber-50 border border-amber-100"><span class="mt-0.5 text-amber-700">🌙</span><div><p class="font-bold text-amber-900">রাত</p><p>রিভিশন, ভোকাবুলারি, বাংলা/ইংরেজি ব্যাকরণ, MCQ, এবং ডেইলি এক্সাম।</p></div></div><div class="flex gap-3 items-start p-2.5 rounded-lg bg-blue-50 border border-blue-100"><span class="mt-0.5 text-blue-700">📌</span><div><p class="font-bold text-blue-900">সপ্তাহান্ত</p><p>উইকলি এক্সাম, ভুলের রিভিশন, নমুনা প্রশ্ন ও ফাইনাল প্রস্তুতি।</p></div></div></div></div>
+            </div>
+        </section>
+        <section class="bg-white rounded-xl shadow-sm border border-stone-200 p-5">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-emerald-900">🎓 P2A Academy-এর সাথে প্রস্তুতি</h2>
+                    <p class="text-xs text-stone-500">এই রুটিনের পাশাপাশি P2A Academy-এর BCS কোর্স ও অনুশীলন দেখুন। কোর্সের বিস্তারিত ও প্রাপ্যতা তাদের সাইটে যাচাই করুন।</p>
+                </div>
+                <a href="https://p2a.academy/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center bg-emerald-800 hover:bg-emerald-700 text-white font-semibold px-4 py-2 rounded-lg text-xs transition">সব কোর্স দেখুন ↗</a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <a href="https://p2a.academy/courses/52-tornado" target="_blank" rel="noopener noreferrer" class="block rounded-lg border border-emerald-100 bg-emerald-50 p-4 hover:border-emerald-300 transition">
+                    <span class="text-xs font-bold text-emerald-800">BCS প্রস্তুতি</span>
+                    <span class="mt-1 block text-sm font-bold text-stone-800">52 BCS Preli Tornado Batch</span>
+                    <span class="mt-2 block text-xs text-stone-600">কোর্সের বিস্তারিত দেখুন ↗</span>
+                </a>
+            </div>
+        </section>
+        <section class="bg-white rounded-xl shadow-sm border border-stone-200 p-5">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4"><div><h2 class="text-lg font-bold text-emerald-900">📚 ৬০ দিনের রুটিন ও ডেইলি সেশন</h2><p class="text-xs text-stone-500">সপ্তাহ, বিষয় ও keyword দিয়ে ফিল্টার করুন।</p></div></div>
+            <div class="flex flex-col md:flex-row gap-3 mb-5"><div id="weekTabs" class="flex flex-wrap gap-2"><button data-week="all" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-md bg-emerald-800 text-white">সকল দিন</button><button data-week="week1" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-md bg-stone-100 text-stone-700 hover:bg-stone-200">Week 1</button><button data-week="week2" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-md bg-stone-100 text-stone-700 hover:bg-stone-200">Week 2</button><button data-week="week3" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-md bg-stone-100 text-stone-700 hover:bg-stone-200">Week 3</button><button data-week="week4" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-md bg-stone-100 text-stone-700 hover:bg-stone-200">Week 4</button><button data-week="week5" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-md bg-stone-100 text-stone-700 hover:bg-stone-200">Week 5</button><button data-week="week6" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-md bg-stone-100 text-stone-700 hover:bg-stone-200">Week 6</button><button data-week="week7" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-md bg-stone-100 text-stone-700 hover:bg-stone-200">Week 7</button><button data-week="week8" class="tab-btn px-3 py-1.5 text-xs font-semibold rounded-md bg-stone-100 text-stone-700 hover:bg-stone-200">Week 8</button></div></div>
+            <div class="flex flex-col md:flex-row gap-3 mb-6"><select id="subjectSelect" class="w-full md:w-56 border border-stone-300 rounded-md px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"><option value="all">সকল বিষয়</option><option value="গণিত">গণিত</option><option value="বাংলা">বাংলা</option><option value="ইংরেজি">ইংরেজি</option><option value="বাংলাদেশ বিষয়াবলী">বাংলাদেশ বিষয়াবলী</option><option value="আন্তর্জাতিক বিষয়াবলী">আন্তর্জাতিক বিষয়াবলী</option><option value="আইসিটি">আইসিটি</option><option value="ভূগোল">ভূগোল</option><option value="সাধারণ বিজ্ঞান">সাধারণ বিজ্ঞান</option></select><input id="searchInput" type="text" placeholder="টপিক, শব্দ, দিন বা বিষয় লিখুন" class="w-full border border-stone-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"></div>
+            <div id="routineGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+        </section>
+        <section class="bg-white rounded-xl shadow-sm border border-stone-200 p-5">
+            <div class="mb-4"><h2 class="text-lg font-bold text-emerald-900">🧪 এক্সাম ডিরেক্টরি</h2><p class="text-xs text-stone-500">সপ্তাহিক পরীক্ষা, ফাইনাল ও Open Book রিভিশন দ্রুত খুঁজুন।</p></div>
+            <div class="flex gap-3 border-b border-stone-200 mb-3 pb-2 text-xs font-bold"><button id="tabWeekly" onclick="switchExamTab('weekly')" class="px-3 py-1 text-xs font-bold text-emerald-800 border-b-2 border-emerald-800">সপ্তাহিক পরীক্ষা</button><button id="tabFinals" onclick="switchExamTab('finals')" class="px-3 py-1 text-xs font-bold text-stone-500 hover:text-emerald-800">ফাইনাল এক্সাম</button><button id="tabOpenBook" onclick="switchExamTab('openbook')" class="px-3 py-1 text-xs font-bold text-stone-500 hover:text-emerald-800">Open Book</button></div>
+            <div id="weeklyExamContent" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs pt-2"></div>
+            <div id="finalsExamContent" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs pt-2"></div>
+            <div id="openBookExamContent" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs pt-2"></div>
+        </section>
+    </main>
+    <footer class="bg-stone-800 text-stone-400 py-6 text-center text-xs mt-10"><div class="w-full px-4 md:px-6 xl:px-10"><p>BCS Online Coaching Master Routine • ২ মাসের (৬০ দিন) নিবিড় প্রস্তুতি গাইড</p><p class="mt-1 text-stone-500">সকল বিষয়, ডেইলি সেশন, উইকলি পরীক্ষা, ফাইনাল, রিভিশন ও Mock Practice-এর ওপর ভিত্তি করে তৈরি।</p></div></footer>
+    <script>
+        const routinePlan = [
+            ['week1','গণিত','বাস্তব সংখ্যা ও পূর্ণ সংখ্যার গুণনীয়ক','ডেইলি এক্সাম: বাস্তব সংখ্যা, গুণনীয়ক','বাংলা ব্যাকরণ: ধ্বনি, বর্ণ ও শব্দ','ডেইলি এক্সাম: ধ্বনি, বর্ণ ও শব্দ','Weekly Exam 1'],
+            ['week1','গণিত','বীজগণিতীয় রাশি ও সমীকরণ','ডেইলি এক্সাম: রাশি ও সমীকরণ','ইংরেজি ব্যাকরণ: Noun, Pronoun','ডেইলি এক্সাম: Noun & Pronoun',null],
+            ['week1','গণিত','দ্বিঘাত সমীকরণ ও অসমতা','ডেইলি এক্সাম: দ্বিঘাত সমীকরণ','বাংলা সাহিত্য: প্রাচীন ও মধ্যযুগ','ডেইলি এক্সাম: প্রাচীন ও মধ্যযুগ',null],
+            ['week1','গণিত','লগারিদম, সূচক ও সেট','ডেইলি এক্সাম: সূচক ও সেট','ইংরেজি সাহিত্য: Old & Middle English','ডেইলি এক্সাম: Old English basics',null],
+            ['week1','বাংলা','বাংলা ভাষার উৎপত্তি ও শব্দগঠন','ডেইলি এক্সাম: ভাষার উৎপত্তি','ইংরেজি গ্রামার: Verb, Tense','ডেইলি এক্সাম: Tense basics',null],
+            ['week1','ইংরেজি','Synonyms, Antonyms ও Vocabulary Drill','ডেইলি এক্সাম: শব্দভাণ্ডার','বাংলা ব্যাকরণ: সন্ধি ও সমাস','ডেইলি এক্সাম: সন্ধি ও সমাস',null],
+            ['week1','গণিত','Week 1 Revision + Maths MCQ Marathon','উইকলি এক্সাম ০১','Vocabulary + Grammar Revision','উইকলি এক্সাম ০২','Weekly Exam 1'],
+            ['week1','বাংলা','Weekly recap and model questions','সপ্তাহিক রিভিশন','English grammar summary','সপ্তাহিক রিভিশন','Weekly Exam 1'],
+            ['week2','গণিত','পরিমিতি, ত্রিকোণমিতি ও জ্যামিতি','ডেইলি এক্সাম: পরিমিতি ও ত্রিকোণমিতি','বাংলা ব্যাকরণ: বাক্য, পদ ও তার প্রকার','ডেইলি এক্সাম: বাক্যগঠন',null],
+            ['week2','গণিত','পাটিগণিত: শতকরা, লাভ-ক্ষতি ও মুনাফা','ডেইলি এক্সাম: শতকরা ও লাভ-ক্ষতি','ইংরেজি গ্রামার: Adjective, Adverb','ডেইলি এক্সাম: Mood and modifiers',null],
+            ['week2','গণিত','সম্ভাবনা, বিন্যাস ও সমাবেশ','ডেইলি এক্সাম: সম্ভাবনা','বাংলা সাহিত্য: আধুনিক সাহিত্য ১-৩','ডেইলি এক্সাম: আধুনিক সাহিত্য',null],
+            ['week2','বাংলা','বাক্যরীতি, প্রকৃতি-প্রত্যয় ও সমার্থক শব্দ','ডেইলি এক্সাম: শব্দগঠন','ইংরেজি সাহিত্য: Renaissance basics','ডেইলি এক্সাম: Renaissance topics',null],
+            ['week2','ইংরেজি','Subject-Verb Agreement ও Preposition','ডেইলি এক্সাম: SVA & preposition','বাংলা বানান ও সমাস চেক','ডেইলি এক্সাম: বানান ও সমাস',null],
+            ['week2','গণিত','দ্বিপদী বিস্তার ও সীমা ধারণা','ডেইলি এক্সাম: দ্বিপদী','English Vocabulary: idioms & phrasal verbs','ডেইলি এক্সাম: idioms',null],
+            ['week2','বাংলা','Week 2 tough-topic revision','উইকলি এক্সাম ০২','English quick revision','উইকলি এক্সাম ০৩','Weekly Exam 2'],
+            ['week2','ইংরেজি','Model test and error correction','মডেল টেস্ট','বাংলা ব্যাকরণ recap','রিভিশন','Weekly Exam 2'],
+            ['week3','বাংলাদেশ বিষয়াবলী','বাংলাদেশের ইতিহাস: পটভূমি ও মুক্তিযুদ্ধ','ডেইলি এক্সাম: মুক্তিযুদ্ধ','বাংলাদেশের সংস্কৃতি ও জাতীয় পরিচয়','ডেইলি এক্সাম: সংস্কৃতি',null],
+            ['week3','বাংলাদেশ বিষয়াবলী','বাংলাদেশের সংবিধান ও রাজনৈতিক ব্যবস্থা','ডেইলি এক্সাম: সংবিধান','বাংলাদেশের অর্থনীতি ও উন্নয়ন','ডেইলি এক্সাম: অর্থনীতি',null],
+            ['week3','আন্তর্জাতিক বিষয়াবলী','বিশ্ব রাজনীতি ও জাতিসংঘ','ডেইলি এক্সাম: জাতিসংঘ','আন্তর্জাতিক সম্পর্ক ও নিরাপত্তা','ডেইলি এক্সাম: নিরাপত্তা',null],
+            ['week3','আন্তর্জাতিক বিষয়াবলী','ইউরোপ, এশিয়া ও আমেরিকার geopolitics','ডেইলি এক্সাম: অঞ্চলভিত্তিক','বাংলাদেশের পররাষ্ট্রনীতি','ডেইলি এক্সাম: পররাষ্ট্রনীতি',null],
+            ['week3','বাংলাদেশ বিষয়াবলী','ভাষা আন্দোলন, ১৯৭১ ও গৌরবগাথা','ডেইলি এক্সাম: ভাষা আন্দোলন','ভূগোল ও পরিবেশদর্শন','ডেইলি এক্সাম: পরিবেশ',null],
+            ['week3','ভূগোল','বাংলাদেশ ও বিশ্ব ভূগোল মডিউল ১','ডেইলি এক্সাম: ভূগোল basics','আন্তর্জাতিক চুক্তি ও সংগঠন','ডেইলি এক্সাম: চুক্তি ও সংগঠন',null],
+            ['week3','বাংলাদেশ বিষয়াবলী','Week 3 revision','উইকলি এক্সাম ০৩','International affairs recap','রিভিশন','Weekly Exam 3'],
+            ['week3','আন্তর্জাতিক বিষয়াবলী','Model questions and case practice','মডেল টেস্ট','বাংলাদেশ affairs recap','রিভিশন','Weekly Exam 3'],
+            ['week4','আইসিটি','কম্পিউটার মৌলিক, হার্ডওয়্যার ও সফটওয়্যার','ডেইলি এক্সাম: হার্ডওয়্যার','কম্পিউটারের ইতিহাস ও ব্যবহার','ডেইলি এক্সাম: কম্পিউটার ব্যবহারের রীতি',null],
+            ['week4','আইসিটি','ওএস, নেটওয়ার্কিং ও ইন্টারনেট','ডেইলি এক্সাম: OS & Networking','DBMS, MS Office ও Spreadsheet','ডেইলি এক্সাম: DBMS basics',null],
+            ['week4','আইসিটি','প্রোগ্রামিং কনসেপ্ট ও ডিজিটাল লজিক','ডেইলি এক্সাম: ডিজিটাল লজিক','লজিক গেট ও কোডিং ভিত্তি','ডেইলি এক্সাম: logic gate',null],
+            ['week4','ভূগোল','জিওগ্রাফি: পৃথিবী, মানচিত্র, জলবায়ু','ডেইলি এক্সাম: আবহাওয়া ও মানচিত্র','বাংলাদেশের প্রাকৃতিক সম্পদ','ডেইলি এক্সাম: সম্পদ',null],
+            ['week4','সাধারণ বিজ্ঞান','কোষ, জিনতত্ত্ব ও বংশগতি','ডেইলি এক্সাম: কোষ ও জিন','যান্ত্রিক ও বৈজ্ঞানিক সূত্র','ডেইলি এক্সাম: সূত্র',null],
+            ['week4','সাধারণ বিজ্ঞান','পদার্থবিজ্ঞান: বল, শক্তি ও কাজ','ডেইলি এক্সাম: বল ও শক্তি','রসায়ন: মৌল, যৌগ ও বিক্রিয়া','ডেইলি এক্সাম: রসায়ন',null],
+            ['week4','আইসিটি','Week 4 revision and quick tests','উইকলি এক্সাম ০৪','ICT MCQ challenge','প্র্যাকটিস','Weekly Exam 4'],
+            ['week4','ভূগোল','Science + Geography mixed revision','মিক্সড রিভিশন','কুইজ টেস্ট','রিভিশন','Weekly Exam 4'],
+            ['week5','সাধারণ বিজ্ঞান','জীববিজ্ঞান: মানবদেহ, হরমোন, রোগ','ডেইলি এক্সাম: মানবদেহ','জলবায়ু, পরিবেশ ও জীববৈচিত্র্য','ডেইলি এক্সাম: পরিবেশ',null],
+            ['week5','সাধারণ বিজ্ঞান','জ্যোতির্বিজ্ঞান, সৌরজগৎ ও মহাশূন্য','ডেইলি এক্সাম: মহাশূন্য','গণিত: মৌলিক ম্যাথ রিভিশন','ডেইলি এক্সাম: ম্যাথ রিভিশন',null],
+            ['week5','গণিত','সেট, ফাংশন, অনুপাত-সমানুপাত','ডেইলি এক্সাম: সেট ও ফাংশন','ভোকাবুলারি ও Idiom drill','ডেইলি এক্সাম: idiom challenge',null],
+            ['week5','ইংরেজি','Sentence correction ও transformation','ডেইলি এক্সাম: sentence correction','বাংলা ব্যাকরণ রিভিশন','ডেইলি এক্সাম: ব্যাকরণ',null],
+            ['week5','বাংলা','কবিতা, গদ্য ও সাহিত্য বিশ্লেষণ','ডেইলি এক্সাম: সাহিত্য','ইংরেজি literature summaries','ডেইলি এক্সাম: literature',null],
+            ['week5','আন্তর্জাতিক বিষয়াবলী','বৈশ্বিক চ্যালেঞ্জ ও কূটনীতি','ডেইলি এক্সাম: কূটনীতি','বাংলাদেশের অভ্যন্তরীণ ও বৈদেশিক নীতি','ডেইলি এক্সাম: নীতি',null],
+            ['week5','গণিত','Week 5 revision and MCQ sprint','উইকলি এক্সাম ০৫','mixed problem solving','প্র্যাকটিস','Weekly Exam 5'],
+            ['week5','সাধারণ বিজ্ঞান','Science recap + model questions','মডেল টেস্ট','ভোকাবুলারি recap','রিভিশন','Weekly Exam 5'],
+            ['week6','গণিত','মূলদ ও অমূলদ সংখ্যা, অনুক্রম','ডেইলি এক্সাম: অনুক্রম','বাংলা ব্যাকরণ: কারক, সমাস, সন্ধি','ডেইলি এক্সাম: কারক ও সমাস',null],
+            ['week6','গণিত','জ্যামিতি, মেট্রিক ও ত্রিকোণমিতি','ডেইলি এক্সাম: জ্যামিতি','ইংরেজি Grammar: Clause, Phrase','ডেইলি এক্সাম: clause & phrase',null],
+            ['week6','বাংলা','রচনা, অনুচ্ছেদ ও ভাবসম্প্রসারণ','ডেইলি এক্সাম: রচনা','ইংরেজি passage practice','ডেইলি এক্সাম: passage',null],
+            ['week6','ইংরেজি','Reading comprehension & summary writing','ডেইলি এক্সাম: reading','বাংলা সাহিত্য রিভিশন','ডেইলি এক্সাম: সাহিত্য',null],
+            ['week6','বাংলাদেশ বিষয়াবলী','সার্বিক রিভিশন: ইতিহাস, সংবিধান, অর্থনীতি','ডেইলি এক্সাম: বেগতিক প্রশ্ন','আন্তর্জাতিক বিষয়াবলী রিভিশন','ডেইলি এক্সাম: ভূরাজনীতি',null],
+            ['week6','আইসিটি','নেটওয়ার্ক, কনফিগারেশন ও সুরক্ষা','ডেইলি এক্সাম: নেটওয়ার্ক','ডেটাবেজ ও সফটওয়্যার রিভিশন','ডেইলি এক্সাম: DBMS',null],
+            ['week6','গণিত','Week 6 rehearsal','উইকলি এক্সাম ০৬','MCQ + short answer test','প্র্যাকটিস','Weekly Exam 6'],
+            ['week6','বাংলা','বিষয়ভিত্তিক mixed mock','মডেল টেস্ট','English grammar recap','রিভিশন','Weekly Exam 6'],
+            ['week7','সাধারণ বিজ্ঞান','পদার্থবিজ্ঞান ও রসায়ন পূর্ণ রিভিশন','ডেইলি এক্সাম: Science recap','জীববিজ্ঞান ও পরিবেশ','ডেইলি এক্সাম: জীববিজ্ঞান',null],
+            ['week7','ভূগোল','ভূগোল ও জলবায়ু রিভিশন','ডেইলি এক্সাম: মানচিত্র ও জলবায়ু','বাংলাদেশ/আন্তর্জাতিক বিষয়াবলী','ডেইলি এক্সাম: polity',null],
+            ['week7','আইসিটি','ICT full revision and common questions','ডেইলি এক্সাম: ICT','গণিত mock drill','ডেইলি এক্সাম: maths drill',null],
+            ['week7','ইংরেজি','Final vocabulary + grammar marathon','ডেইলি এক্সাম: grammar','বাংলা ব্যাকরণ ও সাহিত্য','ডেইলি এক্সাম: বাংলা',null],
+            ['week7','বাংলাদেশ বিষয়াবলী','আইন, প্রশাসন ও সংবিধান','ডেইলি এক্সাম: আইন ও প্রশাসন','রাজনৈতিক ব্যবস্থা ও অর্থনীতি','ডেইলি এক্সাম: রাজনীতি',null],
+            ['week7','আন্তর্জাতিক বিষয়াবলী','আন্তর্জাতিক নিরাপত্তা ও নীতি','ডেইলি এক্সাম: আন্তর্জাতিক','অর্থনৈতিক ও জলবায়ু নীতি','ডেইলি এক্সাম:জি.পি.আর.',null],
+            ['week7','গণিত','Week 7 mixed exam','উইকলি এক্সাম ০৭','final subject revision','রিভিশন','Weekly Exam 7'],
+            ['week7','সব বিষয়','Comprehensive mock and self-check','মক টেস্ট','error review','রিভিশন','Weekly Exam 7'],
+            ['week8','সব বিষয়','Diagnostic mock test-1','মক টেস্ট ০১','ভুল-ফেরত ও নোট সংশোধন','রিভিশন','Final Mock 1'],
+            ['week8','সব বিষয়','Diagnostic mock test-2','মক টেস্ট ০২','বাংলা/ইংরেজি রিভিশন','রিভিশন','Final Mock 2'],
+            ['week8','সব বিষয়','Mathematics and reasoning sprint','মডেল টেস্ট','Science + ICT revision','রিভিশন','Final Mock 3'],
+            ['week8','সব বিষয়','Final full-length practice exam','ফাইনাল প্রাকটিস','শেষবারের মতো রিভিশন','ফাইনাল রিভিশন','Final Mock 4'],
+        ];
+        const routineData = routinePlan.map(([week, subject, morningTitle, morningExam, nightTitle, nightExam, weeklyExamTag], index) => ({ day: index + 1, week, subject, morningTitle, morningExam, nightTitle, nightExam, weeklyExamTag }));
+        const weeklyExamsData = ['Weekly 01: গণিত, বাংলা ব্যাকরণ, English basics','Weekly 02: গণিত, বাংলা সাহিত্য, English grammar','Weekly 03: বাংলাদেশ ও আন্তর্জাতিক বিষয়াবলী','Weekly 04: ICT, Geography, Science basics','Weekly 05: Maths, English, Science, Literature','Weekly 06: বাংলা ব্যাকরণ, ইংরেজি Grammar, ICT','Weekly 07: Mixed Full Revision + Mock Drill','Final Mock 01-04: Full-length practice set'];
+        const finalExamsData = ['🏆 গণিত Final Exam 01','🏆 বাংলা Final Exam 01','🏆 ইংরেজি Final Exam 01','🏆 বাংলাদেশ বিষয়াবলী Final Exam','🏆 আন্তর্জাতিক বিষয়াবলী Final Exam','🏆 ICT Final Exam','🏆 ভূগোল Final Exam','🏆 সাধারণ বিজ্ঞান Final Exam','🏆 Mixed Subject Final Mock','👑 BCS 60-Day Final Revision Test'];
+        const openBookData = ['📖 বাংলা সাহিত্য Open Book 01-08','📖 ইংরেজি Grammar Open Book 01-08','📖 Vocabulary Open Book 01-10','📖 ICT Open Book 01-06','📖 Geography Open Book 01-05','📖 Science Open Book 01-08','📖 বাংলাদেশ বিষয়াবলী Open Book 01-08','📖 আন্তর্জাতিক বিষয়াবলী Open Book 01-08'];
+        let completedSessions = JSON.parse(localStorage.getItem('bcs_completed_sessions_60')) || {};
+        let currentWeekFilter = 'all';
+        document.addEventListener('DOMContentLoaded', () => { renderRoutine(); renderExamsDirectory(); initChart(); updateProgress(); });
+        function renderRoutine() {
+            const grid = document.getElementById('routineGrid');
+            const subjectFilter = document.getElementById('subjectSelect').value;
+            const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
+            grid.innerHTML = '';
+            const filtered = routineData.filter(item => {
+                const matchWeek = currentWeekFilter === 'all' || item.week === currentWeekFilter;
+                const matchSubject = subjectFilter === 'all' || item.subject === subjectFilter;
+                const matchSearch = item.morningTitle.toLowerCase().includes(searchText) || item.nightTitle.toLowerCase().includes(searchText) || item.morningExam.toLowerCase().includes(searchText) || item.nightExam.toLowerCase().includes(searchText) || `day ${item.day}`.includes(searchText);
+                return matchWeek && matchSubject && matchSearch;
+            });
+            if (filtered.length === 0) { grid.innerHTML = '<div class="col-span-full py-10 text-center text-stone-400 text-sm">কোনো রুটিন কার্ড পাওয়া যায়নি। ফিল্টার বা সার্চ পরিবর্তন করে দেখুন।</div>'; return; }
+            filtered.forEach(item => {
+                const morningKey = `d${item.day}_m`;
+                const nightKey = `d${item.day}_n`;
+                const isMorningDone = !!completedSessions[morningKey];
+                const isNightDone = !!completedSessions[nightKey];
+                const cardHtml = `<div class="bg-white rounded-xl border border-stone-200 shadow-sm p-4 hover:shadow-md transition flex flex-col justify-between"><div><div class="flex justify-between items-center mb-3 border-b border-stone-100 pb-2"><div class="flex items-center space-x-2 space-x-reverse"><span class="bg-emerald-800 text-amber-300 font-bold px-2.5 py-0.5 rounded text-xs">দিন ${item.day}</span><span class="text-xs text-stone-500 font-medium">${item.subject}</span></div>${item.weeklyExamTag ? `<span class="bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-bold px-1.5 py-0.5 rounded">${item.weeklyExamTag}</span>` : ''}</div><div class="space-y-3 text-xs"><div class="p-2.5 rounded-lg ${isMorningDone ? 'bg-emerald-50 border border-emerald-200' : 'bg-stone-50'} transition"><div class="flex items-start space-x-2 space-x-reverse"><input type="checkbox" id="${morningKey}" ${isMorningDone ? 'checked' : ''} onchange="toggleSession('${morningKey}')" class="mt-0.5 h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-stone-300 rounded cursor-pointer"><label for="${morningKey}" class="cursor-pointer flex-grow"><span class="font-bold text-stone-800 block">🌅 সকাল: ${item.morningTitle}</span><span class="text-[11px] text-emerald-700 block mt-0.5">📝 ${item.morningExam}</span></label></div></div><div class="p-2.5 rounded-lg ${isNightDone ? 'bg-emerald-50 border border-emerald-200' : 'bg-stone-50'} transition"><div class="flex items-start space-x-2 space-x-reverse"><input type="checkbox" id="${nightKey}" ${isNightDone ? 'checked' : ''} onchange="toggleSession('${nightKey}')" class="mt-0.5 h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-stone-300 rounded cursor-pointer"><label for="${nightKey}" class="cursor-pointer flex-grow"><span class="font-bold text-stone-800 block">🌙 রাত: ${item.nightTitle}</span><span class="text-[11px] text-emerald-700 block mt-0.5">📝 ${item.nightExam}</span></label></div></div></div></div><div class="mt-3 pt-2 border-t border-stone-100 flex justify-between items-center text-[11px] text-stone-400"><span>স্ট্যাটাস:</span><span class="font-semibold ${isMorningDone && isNightDone ? 'text-emerald-600' : (isMorningDone || isNightDone ? 'text-amber-600' : 'text-stone-400')}">${isMorningDone && isNightDone ? '✅ দিন সম্পন্ন' : (isMorningDone || isNightDone ? '⏳ আংশিক সম্পন্ন' : '❌ বাকি আছে')}</span></div></div>`;
+                grid.insertAdjacentHTML('beforeend', cardHtml);
+            });
+        }
+        function filterRoutine(week) { currentWeekFilter = week; document.querySelectorAll('#weekTabs .tab-btn').forEach(btn => { if (btn.dataset.week === week) { btn.className = 'tab-btn px-3 py-1.5 text-xs font-semibold rounded-md bg-emerald-800 text-white'; } else { btn.className = 'tab-btn px-3 py-1.5 text-xs font-semibold rounded-md bg-stone-100 text-stone-700 hover:bg-stone-200'; } }); applyFilters(); }
+        function applyFilters() { renderRoutine(); }
+        function toggleSession(key) { if (completedSessions[key]) { delete completedSessions[key]; } else { completedSessions[key] = true; } localStorage.setItem('bcs_completed_sessions_60', JSON.stringify(completedSessions)); renderRoutine(); updateProgress(); }
+        function updateProgress() { const totalSessions = routineData.length * 2; const doneCount = Object.keys(completedSessions).length; const percentage = Math.round((doneCount / totalSessions) * 100); document.getElementById('completedCount').innerText = `${doneCount} / ${totalSessions}`; document.getElementById('progressPercentage').innerText = `${percentage}%`; document.getElementById('progressBarLabel').innerText = `${percentage}% সম্পন্ন`; document.getElementById('progressBar').style.width = `${percentage}%`; }
+        function resetProgress() { if (confirm('আপনি কি সত্যিই সকল সম্পন্ন সেশন রিসেট করতে চান?')) { completedSessions = {}; localStorage.removeItem('bcs_completed_sessions_60'); renderRoutine(); updateProgress(); } }
+        function renderExamsDirectory() { const weeklyEl = document.getElementById('weeklyExamContent'); const finalsEl = document.getElementById('finalsExamContent'); const openBookEl = document.getElementById('openBookExamContent'); weeklyEl.innerHTML = weeklyExamsData.map(item => `<div class="p-2.5 rounded bg-stone-50 border border-stone-200 font-medium text-stone-700">${item}</div>`).join(''); finalsEl.innerHTML = finalExamsData.map(item => `<div class="p-2.5 rounded bg-amber-50 border border-amber-200 font-bold text-amber-900">${item}</div>`).join(''); openBookEl.innerHTML = openBookData.map(item => `<div class="p-2.5 rounded bg-emerald-50 border border-emerald-200 font-medium text-emerald-900">${item}</div>`).join(''); }
+        function switchExamTab(tab) { document.getElementById('weeklyExamContent').classList.add('hidden'); document.getElementById('finalsExamContent').classList.add('hidden'); document.getElementById('openBookExamContent').classList.add('hidden'); document.getElementById('tabWeekly').className = 'px-3 py-1 text-xs font-bold text-stone-500 hover:text-emerald-800'; document.getElementById('tabFinals').className = 'px-3 py-1 text-xs font-bold text-stone-500 hover:text-emerald-800'; document.getElementById('tabOpenBook').className = 'px-3 py-1 text-xs font-bold text-stone-500 hover:text-emerald-800'; if (tab === 'weekly') { document.getElementById('weeklyExamContent').classList.remove('hidden'); document.getElementById('tabWeekly').className = 'px-3 py-1 text-xs font-bold text-emerald-800 border-b-2 border-emerald-800'; } else if (tab === 'finals') { document.getElementById('finalsExamContent').classList.remove('hidden'); document.getElementById('tabFinals').className = 'px-3 py-1 text-xs font-bold text-emerald-800 border-b-2 border-emerald-800'; } else if (tab === 'openbook') { document.getElementById('openBookExamContent').classList.remove('hidden'); document.getElementById('tabOpenBook').className = 'px-3 py-1 text-xs font-bold text-emerald-800 border-b-2 border-emerald-800'; } }
+        document.getElementById('subjectSelect').addEventListener('change', renderRoutine);
+        document.getElementById('searchInput').addEventListener('input', renderRoutine);
+        document.querySelectorAll('#weekTabs .tab-btn').forEach(btn => { btn.addEventListener('click', () => filterRoutine(btn.dataset.week)); });
+        function initChart() { const ctx = document.getElementById('subjectChart').getContext('2d'); const subjectCounts = {}; routineData.forEach(item => { subjectCounts[item.subject] = (subjectCounts[item.subject] || 0) + 1; }); new Chart(ctx, { type: 'doughnut', data: { labels: Object.keys(subjectCounts), datasets: [{ data: Object.values(subjectCounts), backgroundColor: ['#047857','#d97706','#2563eb','#7c3aed','#dc2626','#059669','#475569','#0f766e'], borderWidth: 2, borderColor: '#ffffff' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { size: 11 } } }, tooltip: { callbacks: { label: function(context) { return `${context.label}: ${context.raw} দিনের সেশন`; } } } } } }); }
+    </script>
+</body>
+</html>
