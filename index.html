@@ -4,9 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BCS 60-Day Master Study Routine & Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        body {
+            background:
+                radial-gradient(ellipse at 8% 8%, rgba(16, 185, 129, 0.10), transparent 34rem),
+                radial-gradient(ellipse at 94% 24%, rgba(59, 130, 246, 0.08), transparent 30rem),
+                linear-gradient(135deg, #f8fafc 0%, #f0f7f4 52%, #f1f5f9 100%);
+            font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+        }
+        main > section {
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.055);
+        }
         .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 380px; }
         @media (min-width: 768px) { .chart-container { height: 340px; } }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -15,14 +28,14 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
-<body class="bg-stone-50 text-slate-800 font-sans min-h-screen flex flex-col">
+<body class="text-slate-800 min-h-screen flex flex-col">
     <header class="bg-emerald-800 text-amber-50 shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <span class="text-2xl font-bold bg-amber-400 text-emerald-950 px-2.5 py-1 rounded-lg">IJT.</span>
-                <div>
-                    <h1 class="text-lg md:text-xl font-bold leading-tight">BCS ৬০ দিনের নিবিড় প্রস্তুতি ও রুটিন ট্র্যাকার</h1>
-                    <p class="text-xs text-emerald-200">মোট ২ মাসের পড়া, রিভিশন, এক্সাম ও ফাইনাল প্রস্তুতি পরিকল্পনা</p>
+        <div class="w-full px-4 md:px-6 xl:px-10 py-3 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-4">
+                <span class="shrink-0 text-2xl font-bold bg-amber-400 text-emerald-950 px-2 py-1 rounded-lg">IJT.</span>
+                <div class="min-w-0">
+                    <h1 class="text-lg md:text-xl font-bold leading-tight"> BCS ৬০ দিনের নিবিড় প্রস্তুতি ও রুটিন ট্র্যাকার</h1>
+                    <p class="text-xs text-emerald-200"> মোট ২ মাসের পড়া, রিভিশন, এক্সাম ও ফাইনাল প্রস্তুতি পরিকল্পনা</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3 space-x-reverse text-sm">
@@ -32,7 +45,7 @@
             </div>
         </div>
     </header>
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
+    <main class="flex-grow w-full px-4 md:px-6 xl:px-10 py-6 space-y-6">
         <section class="bg-white rounded-xl shadow-sm border border-stone-200 p-5">
             <div class="mb-4 border-b border-stone-100 pb-3">
                 <h2 class="text-lg font-bold text-emerald-900">📊 আপনার ৬০ দিনের প্রস্তুতি ড্যাশবোর্ড</h2>
@@ -67,21 +80,6 @@
                     <span class="mt-1 block text-sm font-bold text-stone-800">52 BCS Preli Tornado Batch</span>
                     <span class="mt-2 block text-xs text-stone-600">কোর্সের বিস্তারিত দেখুন ↗</span>
                 </a>
-                <a href="https://p2a.academy/courses/special-bcs-exam-batch-general-medical" target="_blank" rel="noopener noreferrer" class="block rounded-lg border border-amber-100 bg-amber-50 p-4 hover:border-amber-300 transition">
-                    <span class="text-xs font-bold text-amber-800">BCS প্রস্তুতি</span>
-                    <span class="mt-1 block text-sm font-bold text-stone-800">51 Special BCS Exam Batch (General + MBBS)</span>
-                    <span class="mt-2 block text-xs text-stone-600">কোর্সের বিস্তারিত দেখুন ↗</span>
-                </a>
-                <a href="https://p2a.academy/courses/special-bcs-exam-batch-general-dental" target="_blank" rel="noopener noreferrer" class="block rounded-lg border border-blue-100 bg-blue-50 p-4 hover:border-blue-300 transition">
-                    <span class="text-xs font-bold text-blue-800">BCS প্রস্তুতি</span>
-                    <span class="mt-1 block text-sm font-bold text-stone-800">51 Special BCS Exam Batch (General + BDS)</span>
-                    <span class="mt-2 block text-xs text-stone-600">কোর্সের বিস্তারিত দেখুন ↗</span>
-                </a>
-                <a href="https://p2a.academy/courses/6-am-club-question-fest" target="_blank" rel="noopener noreferrer" class="block rounded-lg border border-violet-100 bg-violet-50 p-4 hover:border-violet-300 transition">
-                    <span class="text-xs font-bold text-violet-800">প্রশ্ন অনুশীলন</span>
-                    <span class="mt-1 block text-sm font-bold text-stone-800">6 AM Club~Question Fest</span>
-                    <span class="mt-2 block text-xs text-stone-600">কোর্সের বিস্তারিত দেখুন ↗</span>
-                </a>
             </div>
         </section>
         <section class="bg-white rounded-xl shadow-sm border border-stone-200 p-5">
@@ -98,7 +96,7 @@
             <div id="openBookExamContent" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs pt-2"></div>
         </section>
     </main>
-    <footer class="bg-stone-800 text-stone-400 py-6 text-center text-xs mt-10"><div class="max-w-7xl mx-auto px-4"><p>BCS Online Coaching Master Routine • ২ মাসের (৬০ দিন) নিবিড় প্রস্তুতি গাইড</p><p class="mt-1 text-stone-500">সকল বিষয়, ডেইলি সেশন, উইকলি পরীক্ষা, ফাইনাল, রিভিশন ও Mock Practice-এর ওপর ভিত্তি করে তৈরি।</p></div></footer>
+    <footer class="bg-stone-800 text-stone-400 py-6 text-center text-xs mt-10"><div class="w-full px-4 md:px-6 xl:px-10"><p>BCS Online Coaching Master Routine • ২ মাসের (৬০ দিন) নিবিড় প্রস্তুতি গাইড</p><p class="mt-1 text-stone-500">সকল বিষয়, ডেইলি সেশন, উইকলি পরীক্ষা, ফাইনাল, রিভিশন ও Mock Practice-এর ওপর ভিত্তি করে তৈরি।</p></div></footer>
     <script>
         const routinePlan = [
             ['week1','গণিত','বাস্তব সংখ্যা ও পূর্ণ সংখ্যার গুণনীয়ক','ডেইলি এক্সাম: বাস্তব সংখ্যা, গুণনীয়ক','বাংলা ব্যাকরণ: ধ্বনি, বর্ণ ও শব্দ','ডেইলি এক্সাম: ধ্বনি, বর্ণ ও শব্দ','Weekly Exam 1'],
